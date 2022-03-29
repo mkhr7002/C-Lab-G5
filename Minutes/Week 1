@@ -3,9 +3,14 @@ Week 1 Minutes
 Attendees: Marco Jara Blanco, Mary Khreich, Jack Lunn, Zhanbo Zhu
 
 This week, we went through the C Lab assignment and created a pseudo-plan of how to complete all the exercises and integrate them into one file. 
-We then created a high level overview of all the functions and commands we require, focusing mainly on the purpose of the interrupt and how we can optimise memory.
-We discussed some general methods to initalise variables such as the advantages of using dynamically allocated memory for our arrays as they may vary in length.
+
+We then created a high level overview of all the functions and commands we require, focusing mainly on the purpose of the interrupt and how we 
+can optimise memory.
+
+We discussed some general methods to initalise variables. For example, the advantages of using dynamically allocated memory for our arrays as they 
+may vary in length.
 
 We agreed that by next meeting, we will have the following ready:
 - The interrupt vector
 - Reading from the serial port and storing values in an array
+- Some commands
