@@ -5,13 +5,13 @@
 
 
 // set up the serial ports
-void Init_SCI (void) {
+void initaliseSerialPorts (void) {
   
   // clear the bits in SCI0CR1 and SCI1CR1
   SCI0CR1 = 0x00;
   SCI1CR1 = 0x00;
   
-  // turn on transmit interrupt enable and receive interrupt enable bits
+  // turn on receive interrupt enable bit, transmitter enable bit and receiver enable bit
   
   SCICR2  = 0x20;
   
@@ -26,6 +26,43 @@ void Init_SCI (void) {
         movb    #156,SCI1BDL        // FIX THIS
   )
 }
+
+void displaySuccessfulInit(int readData[]) {
+  
+    // clear bits in SCI1CR1
+    SCI1CR1 = 0x00;
+    // permit the use of SCI1 to send bits
+    SCICR2 =   
+    
+    char* string = "Initalisation Successful\r";
+    
+    // store string into readData array which will be overwritten later
+    
+    for (int i = 0; i < strlen(string); i++) {
+    
+      readData[i] = string[i];
+    
+    }
+      
+    i = 0;
+    
+    while (i < strlen(string)) {
+    
+    // if a char is ready to be sent, send one
+      
+    if (SCISR1 && SCI1SR1_TDRE_MASK == True) {
+      
+      SCIDRL = readData[i];
+      i++;  
+        
+    }
+}
+
+
+
+
+
+
 
 
 
