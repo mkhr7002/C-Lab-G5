@@ -1,26 +1,28 @@
 #include <hidef.h>      /* common defines and macros */
 #include "derivative.h"      /* derivative-specific definitions */
-
+#include "functions.h"
 
 
 void main(void) {
-  /* put your own code here */
-
-	EnableInterrupts;
-  
-  // function to initialise serial ports SCI0 and SCI1
-  initialiseSerialPorts(); 
 
   // declare required variables
   // variables required for reading and storing data
-  int readData[20];
+  
+  int readData[30];
   int counter = 0;
   int *index = &counter;
   
+  // initialise serial ports SCI0 and SCI1 to trigger interupts
+  
+  EnableInterrupts;
+  initialiseSerialPorts();
+  
+  // call function to send "Initalisation Successful"
+  // to the terminal via the serial port
+  
+  displaySuccessfulInit(readData); 
 
-
-
-
+ 
 
   for(;;) {
     _FEED_COP(); /* feeds the dog */
