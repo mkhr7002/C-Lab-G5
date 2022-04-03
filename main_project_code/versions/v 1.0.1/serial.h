@@ -2,11 +2,6 @@
 #define SERIAL_HEADER
 
 
-
-// function to intialise serial port
-
-void Init_SCI (void);
-
 // serial port read interrupt definition
 
 __interrupt void SCI0_ISR(int readData[], int* index);
