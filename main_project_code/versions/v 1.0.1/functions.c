@@ -1,4 +1,5 @@
 #include "serial.h"
+#include "string.h"
 
 // include the register/pin definitions
 #include "derivative.h"      /* derivative-specific definitions */
