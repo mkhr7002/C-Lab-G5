@@ -61,6 +61,50 @@ void displaySuccessfulInit(int data[]) {
     
 }
 
+void readSerial(int port) {
+  //asm(sei);
+  if (port == 0) {
+    if (SCI0SR1 && SCI0SR1_RDRF_MASK) {
+      rawData[readCounter] = SCI0DRL; // store the char in a list
+      readCounter ++; // update the value at the pointer to index
+    }
+  }
+  
+  if (port == 1) {
+    if (SCI1SR1 && SCI1SR1_RDRF_MASK) {
+      rawData[readCounter] = SCI1DRL; // store the char in a list
+      readCounter ++; // update the value at the pointer to index
+    }
+  }
+  //asm(cli);  
+      
+}
+
+void processSerialInput(void) {
+  
+  asm(sei); // disable interrupts whilst data is being dealt with
+
+  if (rawData[0] == 0) {
+    // do stuff with commands  
+  } 
+  else if (rawData[0] == 1) {
+    // do stuff with tune  
+  }
+  
+  resetNewInput();
+    
+}
+
+void resetNewInput(void) {
+
+  carriageFlag = 0;
+  readCounter = 0;
+  READ_WRITE = 0;
+  writeCounter = 0;
+  
+  asm(cli); // re enable interrupts  
+}
+
 
 // look at the isr_vectors.c for where this function is 
 //  added to the ISR vector table
@@ -73,10 +117,10 @@ void displaySuccessfulInit(int data[]) {
 __interrupt void SCI0_ISR(void) {
   
   if (READ_WRITE == 0) {
-    
-    rawData[readCounter] = SCI0DRL; // store the char in a list
-    readCounter ++; // update the value at the pointer to index
-    
+    readSerial(0);
+    if (rawData[readCounter] == 13) {
+      carriageFlag = 1;
+    }
   }
   else if (READ_WRITE == 1) {
     // WRITE
@@ -90,14 +134,14 @@ __interrupt void SCI0_ISR(void) {
 __interrupt void SCI1_ISR(void) {
   
   if (READ_WRITE == 0) {
-    
-    rawData[readCounter] = SCI1DRL; // store the char in a list
-    readCounter ++; // update the value at the pointer to index
-    
+    readSerial(1);
+    if (rawData[readCounter] == 13) {
+      carriageFlag = 1;
+    }
   }
   else if (READ_WRITE == 1) {
     // WRITE
-    // SCI1DRL = rawData[writeCounter];
+    // SCI0DRL = rawData[writeCounter];
     // writeCounter += 1
   }
       
