@@ -14,11 +14,16 @@ void main(void) {
   
   //displaySuccessfulInit(rawData); 
 
-  
-
-  for(;;) {
+  while (1) {
     _FEED_COP(); /* feeds the dog */
-  } /* loop forever */
+
+    while (carriageFlag != 1) {
+      _FEED_COP(); /* feeds the dog */
+  
+    }
+    processSerialInput();  
+  }
+
   
   /* please make sure that you never leave main */
 }
