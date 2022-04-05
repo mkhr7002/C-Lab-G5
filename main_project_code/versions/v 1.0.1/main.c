@@ -11,14 +11,14 @@ void main(void) {
   
   // call function to send "Initalisation Successful"
   // to the terminal via the serial port
-  int processedData[SERIAL_BUFFER];
-  processedData = processData();
-  displaySuccessfulInit(data); 
+  
+  //displaySuccessfulInit(rawData); 
 
   
 
   for(;;) {
     _FEED_COP(); /* feeds the dog */
   } /* loop forever */
+  
   /* please make sure that you never leave main */
 }
