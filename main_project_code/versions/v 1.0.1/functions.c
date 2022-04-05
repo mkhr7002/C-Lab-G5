@@ -4,8 +4,6 @@
 // include the register/pin definitions
 #include "derivative.h"      /* derivative-specific definitions */
 
-#define SERIAL_BUFFER 100
-
 static int readCounter = 0; // counter to use for reading in data from serial
 static int writeCounter = 0; // counter to use for writing in data from serial
 static int data[SERIAL_BUFFER]; // list to store characters which are read/sent
@@ -47,14 +45,14 @@ void displaySuccessfulInit(int readData[]) {
     
     for (int i = 0; i < strlen(string); i++) {
     
-      readData[i] = string[i];
+      rawData[i] = string[i];
     
     }
   
     // THIS HAS TO CHANGE TO USE INTERRUPTS TO KNOW WHEN A NEW CHARACTER CAN BE WRITTEN  
     writeCounter = 0; // counter to keep track of which character to send
     while (writeCounter < strlen(string)) {
-      
+      // USE INTERRUPTS HERE TO WRITE CHARS TO SERIAL
     }
 }
 
@@ -64,7 +62,7 @@ int processData(void) {
   
   for (int i = 0; i < SERIAL_BUFFER; i++) {
     
-    processedData[i] = data[i];
+    processedData[i] = rawData[i];
     
   }
   
@@ -84,13 +82,13 @@ __interrupt void SCI0_ISR(void) {
   
   if (READ_WRITE == 0) {
     
-    data[readCounter] = SCI0DRL; // store the char in a list
+    rawData[readCounter] = SCI0DRL; // store the char in a list
     readCounter ++; // update the value at the pointer to index
     
   }
   else if (READ_WRITE == 1) {
     // WRITE
-    // SCI0DRL = data[writeCounter];
+    // SCI0DRL = rawData[writeCounter];
     // writeCounter += 1
   }
       
@@ -101,13 +99,13 @@ __interrupt void SCI1_ISR(void) {
   
   if (READ_WRITE == 0) {
     
-    data[readCounter] = SCI1DRL; // store the char in a list
+    rawData[readCounter] = SCI1DRL; // store the char in a list
     readCounter ++; // update the value at the pointer to index
     
   }
   else if (READ_WRITE == 1) {
     // WRITE
-    // SCI1DRL = data[writeCounter];
+    // SCI1DRL = rawData[writeCounter];
     // writeCounter += 1
   }
       
