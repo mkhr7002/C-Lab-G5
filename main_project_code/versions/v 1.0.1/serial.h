@@ -4,8 +4,8 @@
 
 // serial port read interrupt definition
 
-__interrupt void SCI0_ISR(int readData[], int* index);
+__interrupt void SCI0_ISR(void);
 
-__interrupt void SCI1_ISR(int readData[], int* index);
+__interrupt void SCI1_ISR(void);
 
 #endif
