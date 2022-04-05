@@ -8,7 +8,7 @@
 
 static int readCounter = 0; // counter to use for reading in data from serial
 static int writeCounter = 0; // counter to use for writing in data from serial
-static int readData[SERIAL_BUFFER]; // list to store characters which are read/sent
+static int data[SERIAL_BUFFER]; // list to store characters which are read/sent
 static int READ_WRITE = 0; // constant used to determine whether the port will be reading/writing
 
 // set up the serial ports
@@ -43,7 +43,7 @@ void displaySuccessfulInit(int readData[]) {
     READ_WRITE = 1;
     char* string = "Initalisation Successful\r";
     
-    // store string into readData array which will be overwritten later
+    // store string into readData array so it can be sent to serial port
     
     for (int i = 0; i < strlen(string); i++) {
     
@@ -73,13 +73,13 @@ __interrupt void SCI0_ISR(void) {
   
   if (READ_WRITE == 0) {
     
-    readData[readCounter] = SCI0DRL; // store the char in a list
+    data[readCounter] = SCI0DRL; // store the char in a list
     readCounter ++; // update the value at the pointer to index
     
   }
   else if (READ_WRITE == 1) {
     // WRITE
-    // SCI0DRL = readData[writeCounter];
+    // SCI0DRL = data[writeCounter];
     // writeCounter += 1
   }
       
@@ -90,13 +90,13 @@ __interrupt void SCI1_ISR(void) {
   
   if (READ_WRITE == 0) {
     
-    readData[readCounter] = SCI1DRL; // store the char in a list
+    data[readCounter] = SCI1DRL; // store the char in a list
     readCounter ++; // update the value at the pointer to index
     
   }
   else if (READ_WRITE == 1) {
     // WRITE
-    // SCI1DRL = readData[writeCounter];
+    // SCI1DRL = data[writeCounter];
     // writeCounter += 1
   }
       
