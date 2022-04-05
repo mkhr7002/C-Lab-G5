@@ -4,6 +4,12 @@
 // include the register/pin definitions
 #include "derivative.h"      /* derivative-specific definitions */
 
+#define SERIAL_BUFFER 100
+
+static int readCounter = 0; // counter to use for reading in data from serial
+static int writeCounter = 0; // counter to use for writing in data from serial
+static int readData[SERIAL_BUFFER]; // list to store characters which are read/sent
+static int READ_WRITE = 0; // constant used to determine whether the port will be reading/writing
 
 // set up the serial ports
 void initaliseSerialPorts (void) {
@@ -29,12 +35,12 @@ void initaliseSerialPorts (void) {
 }
 
 void displaySuccessfulInit(int readData[]) {
-  
+    
     // clear bits in SCI1CR1
     SCI1CR1 = 0x00;
-    // permit the use of SCI1 to send bits
-    SCICR2 =   
-    
+    // permit the use of SCI to trigger interrupts when a new bit can be transmitted
+    SCICR2 = 0x88;  
+    READ_WRITE = 1
     char* string = "Initalisation Successful\r";
     
     // store string into readData array which will be overwritten later
@@ -44,25 +50,13 @@ void displaySuccessfulInit(int readData[]) {
       readData[i] = string[i];
     
     }
+  
+    // THIS HAS TO CHANGE TO USE INTERRUPTS TO KNOW WHEN A NEW CHARACTER CAN BE WRITTEN  
+    writeCounter = 0; // counter to keep track of which character to send
+    while (writeCounter < strlen(string)) {
       
-    i = 0;
-    
-    while (i < strlen(string)) {
-    
-    // if a char is ready to be sent, send one
-      
-    if (SCISR1 && SCI1SR1_TDRE_MASK == True) {
-      
-      SCIDRL = readData[i];
-      i++;  
-        
     }
 }
-
-
-
-
-
 
 
 
@@ -75,16 +69,35 @@ void displaySuccessfulInit(int readData[]) {
 // as well as a pointer to a memory address containing an index
 // this is as the main code will not know an interrupt has occured
 
-__interrupt void SCI0_ISR(int readData[], int* index) {
+__interrupt void SCI0_ISR(void) {
+  
+  if (READ_WRITE == 0) {
     
-      readData[index] = SCI0DRL; // store the char in a list
-      &index ++; // update the value at the pointer to index
+    readData[readCounter] = SCI0DRL; // store the char in a list
+    readCounter ++; // update the value at the pointer to index
+    
+  }
+  else if (READ_WRITE == 1) {
+    // WRITE
+    // SCI0DRL = readData[writeCounter];
+    // writeCounter += 1
+  }
       
 } 
     
 
-__interrupt void SCI0_ISR(int readData[], int* index) {
+__interrupt void SCI0_ISR(void) {
+  
+  if (READ_WRITE == 0) {
     
-      readData[index] = SCI0DRL; // store the char in a list
-      &index ++; // update the value at the pointer to index
-}
+    readData[readCounter] = SCI1DRL; // store the char in a list
+    readCounter ++; // update the value at the pointer to index
+    
+  }
+  else if (READ_WRITE == 1) {
+    // WRITE
+    // SCI1DRL = readData[writeCounter];
+    // writeCounter += 1
+  }
+      
+} 
