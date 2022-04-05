@@ -58,7 +58,18 @@ void displaySuccessfulInit(int readData[]) {
     }
 }
 
-
+int processData(void) {
+  
+  int processedData[SERIAL_BUFFER];
+  
+  for (int i = 0; i < SERIAL_BUFFER; i++) {
+    
+    processedData[i] = data[i];
+    
+  }
+  
+  return processedData;
+}
 
 
 // look at the isr_vectors.c for where this function is 
