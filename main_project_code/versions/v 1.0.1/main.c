@@ -2,13 +2,15 @@
 #include "derivative.h"      /* derivative-specific definitions */
 #include "functions.h"
 
+#define SERIAL_BUFFER 40
+
 
 void main(void) {
 
   // declare required variables
   // variables required for reading and storing data
   
-  int readData[30];
+  int readData[SERIAL_BUFFER];
   int counter = 0;
   int *index = &counter;
   
