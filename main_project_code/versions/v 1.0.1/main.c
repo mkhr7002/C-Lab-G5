@@ -2,9 +2,6 @@
 #include "derivative.h"      /* derivative-specific definitions */
 #include "functions.h"
 
-#define SERIAL_BUFFER 40
-
-
 void main(void) {
   
   // initialise serial ports SCI0 and SCI1 to trigger interupts
