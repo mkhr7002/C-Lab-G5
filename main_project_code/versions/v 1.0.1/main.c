@@ -14,7 +14,8 @@ void main(void) {
   
   // call function to send "Initalisation Successful"
   // to the terminal via the serial port
-  
+  int processedData[SERIAL_BUFFER];
+  processedData = processData();
   displaySuccessfulInit(data); 
 
   
