@@ -1,16 +1,12 @@
 #include "serial.h"
 #include "string.h"
+#include "functions.h"
 
 // include the register/pin definitions
 #include "derivative.h"      /* derivative-specific definitions */
 
-static int readCounter = 0; // counter to use for reading in data from serial
-static int writeCounter = 0; // counter to use for writing in data from serial
-static int data[SERIAL_BUFFER]; // list to store characters which are read/sent
-static int READ_WRITE = 0; // constant used to determine whether the port will be reading/writing
-
 // set up the serial ports
-void initaliseSerialPorts (void) {
+void initialiseSerialPorts (void) {
   
   // clear the bits in SCI0CR1 and SCI1CR1
   SCI0CR1 = 0x00;
@@ -18,7 +14,8 @@ void initaliseSerialPorts (void) {
   
   // turn on receive interrupt enable bit, transmitter enable bit and receiver enable bit
   
-  SCICR2  = 0x20;
+  SCI0CR2  = 0x2C;
+  SCI1CR2  = 0x2C;
   
   /* 
   SET THE BAUD RATE
@@ -27,23 +24,29 @@ void initaliseSerialPorts (void) {
   BRParameter = 156250
   */
   
-  asm(
-        movb    #156,SCI1BDL        // FIX THIS
-  )
+  SCI0BDH = 0x00;
+  SCI0BDL = 156;
+  
+  SCI1BDH = 0x00;
+  SCI1BDL = 156;
 }
 
-void displaySuccessfulInit(int readData[]) {
+void displaySuccessfulInit(int data[]) {
     
+    char* string;
+    int i;
     // clear bits in SCI1CR1
+    
     SCI1CR1 = 0x00;
     // permit the use of SCI to trigger interrupts when a new bit can be transmitted
-    SCICR2 = 0x88;  
+    SCI1CR2 = 0x88;  
+    SCI0CR2 = 0x88;  
+
     READ_WRITE = 1;
-    char* string = "Initalisation Successful\r";
+    string = "Initalisation Successful\r";
     
     // store string into readData array so it can be sent to serial port
-    
-    for (int i = 0; i < strlen(string); i++) {
+    for (i = 0; i < strlen(string); i++) {
     
       rawData[i] = string[i];
     
@@ -54,19 +57,8 @@ void displaySuccessfulInit(int readData[]) {
     while (writeCounter < strlen(string)) {
       // USE INTERRUPTS HERE TO WRITE CHARS TO SERIAL
     }
-}
-
-int processData(void) {
-  
-  int processedData[SERIAL_BUFFER];
-  
-  for (int i = 0; i < SERIAL_BUFFER; i++) {
+    READ_WRITE = 0;
     
-    processedData[i] = rawData[i];
-    
-  }
-  
-  return processedData;
 }
 
 
