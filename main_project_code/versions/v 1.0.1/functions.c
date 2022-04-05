@@ -40,7 +40,7 @@ void displaySuccessfulInit(int readData[]) {
     SCI1CR1 = 0x00;
     // permit the use of SCI to trigger interrupts when a new bit can be transmitted
     SCICR2 = 0x88;  
-    READ_WRITE = 1
+    READ_WRITE = 1;
     char* string = "Initalisation Successful\r";
     
     // store string into readData array which will be overwritten later
@@ -86,7 +86,7 @@ __interrupt void SCI0_ISR(void) {
 } 
     
 
-__interrupt void SCI0_ISR(void) {
+__interrupt void SCI1_ISR(void) {
   
   if (READ_WRITE == 0) {
     
