@@ -1,0 +1,11 @@
+Week 2 Minutes
+
+Attendees: Marco Jara Blanco (Remote), Mary Khreich (On Campus), Jack Lunn (On Campus), Zhanbo Zhu (Remote)
+
+We spent a majority of the lab debugging the interrupt as we were consistently getting errors:
+  - The interrupt would not trigger
+  - The interrupt would be continuously triggered which causes the same character to be stored in memory repeatedly, until the string buffer overflows
+  - The interrupt would trigger and the input string would store in memory only when in debugging mode/using breakpoints - the string would not be stored 
+    in memory if we simply run the program
+
+We pseudo-coded the functions that will lead to the commands. We will all consistently work on this for our presentation next week.
