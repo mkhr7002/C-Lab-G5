@@ -6,13 +6,6 @@
 
 
 void main(void) {
-
-  // declare required variables
-  // variables required for reading and storing data
-  
-  int readData[SERIAL_BUFFER];
-  int counter = 0;
-  int *index = &counter;
   
   // initialise serial ports SCI0 and SCI1 to trigger interupts
   
@@ -22,9 +15,9 @@ void main(void) {
   // call function to send "Initalisation Successful"
   // to the terminal via the serial port
   
-  displaySuccessfulInit(readData); 
+  displaySuccessfulInit(data); 
 
- 
+  
 
   for(;;) {
     _FEED_COP(); /* feeds the dog */
