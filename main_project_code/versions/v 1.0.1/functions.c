@@ -35,6 +35,7 @@ void displaySuccessfulInit(int data[]) {
     
     char* string;
     int i;
+    asm(sei);
     // clear bits in SCI1CR1
     
     SCI1CR1 = 0x00;
@@ -51,18 +52,20 @@ void displaySuccessfulInit(int data[]) {
       rawData[i] = string[i];
     
     }
-  
     // THIS HAS TO CHANGE TO USE INTERRUPTS TO KNOW WHEN A NEW CHARACTER CAN BE WRITTEN  
     writeCounter = 0; // counter to keep track of which character to send
-    while (writeCounter < strlen(string)) {
-      // USE INTERRUPTS HERE TO WRITE CHARS TO SERIAL
-    }
+    asm(cli); // turning on interrupts begins the writing process
+
     READ_WRITE = 0;
     
+    // reset control registers to allow interrupts for read only
+    
+    SCI0CR2  = 0x2C;
+    SCI1CR2  = 0x2C;
+        
 }
 
 void readSerial(int port) {
-  //asm(sei);
   if (port == 0) {
     if (SCI0SR1 && SCI0SR1_RDRF_MASK) {
       rawData[readCounter] = SCI0DRL; // store the char in a list
@@ -76,8 +79,30 @@ void readSerial(int port) {
       readCounter ++; // update the value at the pointer to index
     }
   }
-  //asm(cli);  
       
+}
+
+void writeSerial(int port) {
+  
+  if (port == 0) {
+    if (SCI0SR1 && SCI0SR1_TDRE_MASK) {
+      if (rawData[writeCounter] == '\r') {
+        asm(sei);
+      }
+      SCI0DRL = rawData[writeCounter]; // store the char in a list
+      writeCounter ++; // update the value at the pointer to index
+    }
+  }
+  
+  if (port == 1) {
+    if (SCI1SR1 && SCI1SR1_TDRE_MASK) {
+      if (rawData[writeCounter] == '\r') {
+        asm(sei);
+      }
+      SCI0DRL = rawData[writeCounter]; // store the char in a list
+      writeCounter ++; // update the value at the pointer to index
+    }
+  }  
 }
 
 void processSerialInput(void) {
@@ -123,9 +148,7 @@ __interrupt void SCI0_ISR(void) {
     }
   }
   else if (READ_WRITE == 1) {
-    // WRITE
-    // SCI0DRL = rawData[writeCounter];
-    // writeCounter += 1
+    writeSerial(0);
   }
       
 } 
@@ -140,9 +163,7 @@ __interrupt void SCI1_ISR(void) {
     }
   }
   else if (READ_WRITE == 1) {
-    // WRITE
-    // SCI0DRL = rawData[writeCounter];
-    // writeCounter += 1
+    writeSerial(1);
   }
       
 } 
