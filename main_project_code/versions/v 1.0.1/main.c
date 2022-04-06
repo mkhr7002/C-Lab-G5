@@ -12,7 +12,7 @@ void main(void) {
   // call function to send "Initalisation Successful"
   // to the terminal via the serial port
   
-  //displaySuccessfulInit(rawData); 
+  displaySuccessfulInit(rawData); 
 
   while (1) {
     _FEED_COP(); /* feeds the dog */
