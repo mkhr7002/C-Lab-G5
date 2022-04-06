@@ -25,6 +25,8 @@ void displaySuccessfulInit(int data[]);
 // function to read serial data and store in array
 void readSerial(int port);
 
+void writeSerial(int port);
+
 // reset everything so new input can be received
 void resetNewInput(void);
 
