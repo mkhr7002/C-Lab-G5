@@ -39,9 +39,9 @@ void displaySuccessfulInit(int data[]) {
     // clear bits in SCI1CR1
     
     SCI1CR1 = 0x00;
-    // permit the use of SCI to trigger interrupts when a new bit can be transmitted
-    SCI1CR2 = 0x88;  
-    SCI0CR2 = 0x88;  
+    // turn on RE, TE, TIE bits in SCICR2
+    SCI1CR2 = 0x8C;  
+    SCI0CR2 = 0x8C;  
 
     READ_WRITE = 1;
     string = "Initalisation Successful\r";
@@ -52,8 +52,9 @@ void displaySuccessfulInit(int data[]) {
       rawData[i] = string[i];
     
     }
-    // THIS HAS TO CHANGE TO USE INTERRUPTS TO KNOW WHEN A NEW CHARACTER CAN BE WRITTEN  
-    writeCounter = 0; // counter to keep track of which character to send
+    writeCounter = 1; // counter to keep track of which character to send (start 1 to send first char)
+    writeFirstChar(0);
+    writeFirstChar(1);
     asm(cli); // turning on interrupts begins the writing process
 
     READ_WRITE = 0;
@@ -62,7 +63,21 @@ void displaySuccessfulInit(int data[]) {
     
     SCI0CR2  = 0x2C;
     SCI1CR2  = 0x2C;
+    
+    writeCounter = 0;
         
+}
+
+void writeFirstChar(int port) {
+  
+  if (port == 0) {
+    SCI0DRL = rawData[writeCounter]; // send first char to serial port 0
+  }
+  
+  if (port == 1) {
+    SCI1DRL = rawData[writeCounter]; // send first char to serial port 1 
+  }  
+    
 }
 
 void readSerial(int port) {
@@ -85,7 +100,7 @@ void readSerial(int port) {
 void writeSerial(int port) {
   
   if (port == 0) {
-    if (SCI0SR1 && SCI0SR1_TDRE_MASK) {
+    while ((SCI0SR1 & SCI0SR1_TDRE_MASK) == 0) {
       if (rawData[writeCounter] == '\r') {
         asm(sei);
       }
@@ -95,7 +110,7 @@ void writeSerial(int port) {
   }
   
   if (port == 1) {
-    if (SCI1SR1 && SCI1SR1_TDRE_MASK) {
+    while ((SCI0SR1 & SCI0SR1_TDRE_MASK) == 0) {
       if (rawData[writeCounter] == '\r') {
         asm(sei);
       }
@@ -148,7 +163,9 @@ __interrupt void SCI0_ISR(void) {
     }
   }
   else if (READ_WRITE == 1) {
-    writeSerial(0);
+    if (SCI0SR1 & SCI0SR1_TDRE_MASK) {
+      writeSerial(0);
+    }
   }
       
 } 
@@ -163,7 +180,9 @@ __interrupt void SCI1_ISR(void) {
     }
   }
   else if (READ_WRITE == 1) {
-    writeSerial(1);
+    if (SCI1SR1 & SCI1SR1_TDRE_MASK) {
+      writeSerial(1);
+    }
   }
       
 } 
