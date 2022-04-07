@@ -32,4 +32,6 @@ void resetNewInput(void);
 
 void processSerialInput(void);
 
+void writeFirstChar(int port);
+
 #endif
