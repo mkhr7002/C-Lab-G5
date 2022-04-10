@@ -1,0 +1,61 @@
+#include <hidef.h>           /* common defines and macros */
+#include "derivative.h"      /* derivative-specific definitions */
+
+playTune(int *rawData);
+
+void main(void) {
+  
+  int flag = 1;               // flag = 1 -> playing tune
+  flag = playTune(&rawData);   // returns 0 -> ready to receive new tune
+  
+  for(;;) {
+    _FEED_COP();  /* feeds the dog */
+  }               /* loop forever */
+                  /* please make sure that you never leave main */
+}
+
+int playTune(rawData) {
+  
+  int rawData;                          
+  int arrLen;
+  int i = 0;
+  
+  if (sizeof(rawData) % 2 != 0) {           // making data array is divisible by 2 so it can be split into tune and time arrays
+    arrLen = (sizeof(rawData)/2) + 1;
+  } 
+  else {
+    arrLen = (sizeof(rawData)/2);           // if array has an odd number of elements, add 1 to the length
+  }
+  
+  int tuneArr[arrLen];                      // initialise tune and time arrays
+  int timeArr[arrLen];
+  
+  for (i = 0; i < arrLen; i++) {            // transfer data from rawData array to tune and time arrays
+    tuneArr[i] = rawData[2*i];
+    timeArr[i] = rawData[2*i+1];
+  }
+  
+  DDRT =0xFF;                               // set port T as output
+  PTT = 0x00;                               // clear port T
+  
+  for (i = 0; i < arrLen; i++){             // iterate through arrays
+    int timeCounter = timeArr[i] * timeArr[i];   // create unique large time values - this is how long the tune will play for
+    int tuneCounter = tuneArr[i] + tuneArr[i];   // this is the counter between toggling speaker on and off - different times create different tunes 
+    
+   while (timeCounter >= 0) {
+    
+    tuneCounter = tuneArr[i] + tuneArr[i];
+  
+    PTT ^= (1<<4);                          //toggle bit 5 of P (PT5) - toggle speaker on/off
+
+    while (tuneCounter >= 0) {
+     
+    tuneCounter--;                          
+    }
+   
+   timeCounter--;
+   }  
+  }
+  
+  return 0;
+}
