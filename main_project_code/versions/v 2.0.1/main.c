@@ -8,16 +8,18 @@ serialPort SCI1 = {&SCI1BDH, &SCI1BDL, &SCI1CR1, &SCI1CR2, &SCI1DRL, &SCI1SR1};
 
 void main(void) {
   
+  char* initString;
   // initialise serial ports SCI0 and SCI1 to trigger interupts
   
   EnableInterrupts;
-
+  
+  initString = "Initalisation Successful\n";
   initialiseSerialPort(&SCI0);
   
   // call function to send "Initalisation Successful"
   // to the terminal via the serial port
   
-  displaySuccessfulInit(&SCI0);
+  writeStringToSCI(&SCI0, initString);
   DisableInterrupts
   // re-initalise ports for serial reading interrupts
   initialiseSerialPort(&SCI0);
