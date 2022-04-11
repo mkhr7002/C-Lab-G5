@@ -45,9 +45,6 @@ __interrupt void SCI0_ISR(void) {
   
   if (READ_WRITE == 0) {
     readSerial(&SCI0);
-    if (rawData[readCounter] == 13) {
-      carriageFlag = 1;
-    }
   }
   else if (READ_WRITE == 1) {
     writeSerial(&SCI0);
@@ -60,9 +57,6 @@ __interrupt void SCI1_ISR(void) {
   
   if (READ_WRITE == 0) {
     readSerial(&SCI1);
-    if (rawData[readCounter] == 13) {
-      carriageFlag = 1;
-    }
   }
   else if (READ_WRITE == 1) {
     if (SCI1SR1 & SCI1SR1_TDRE_MASK) {
