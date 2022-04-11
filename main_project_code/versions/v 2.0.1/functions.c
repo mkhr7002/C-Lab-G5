@@ -15,15 +15,13 @@ void initialiseSerialPort(serialPort *serial_port) {
   
 }  
 
-void displaySuccessfulInit(serialPort *serial_port) {
+void writeStringToSCI(serialPort *serial_port, char* string) {
     
-    char* string;
     int i;
     DisableInterrupts;
     
     // set READ_WRITE to 1 so that the interrupt knows it should be writing
     READ_WRITE = 1;
-    string = "Initalisation Successful\n";
     
     // store string into rawData array so it can be sent to serial port
     for (i = 0; i < strlen(string); i++) {
