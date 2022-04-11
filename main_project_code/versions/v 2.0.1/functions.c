@@ -23,7 +23,7 @@ void displaySuccessfulInit(serialPort *serial_port) {
     
     // set READ_WRITE to 1 so that the interrupt knows it should be writing
     READ_WRITE = 1;
-    string = "Initalisation Successful\r\n";
+    string = "Initalisation Successful\n";
     
     // store string into rawData array so it can be sent to serial port
     for (i = 0; i < strlen(string); i++) {
@@ -41,7 +41,7 @@ void displaySuccessfulInit(serialPort *serial_port) {
     EnableInterrupts; 
 
     // this will only be reached once the writing has finished
-    //READ_WRITE = 0;
+    READ_WRITE = 0;
         
     // reset writeCounter for the next time a write to serial needs to run
     writeCounter = 0; 
@@ -49,15 +49,19 @@ void displaySuccessfulInit(serialPort *serial_port) {
 }
 
 void readSerial(serialPort *serial_port) {
-  if (*(serial_port->StatusRegister) && SCI0SR1_RDRF_MASK) {
+  if (*(serial_port->StatusRegister) && SCI0SR1_RDRF_MASK) {      
       rawData[readCounter] = *(serial_port->DataRegister); // store the char from port 0 in a static list
+      *(serial_port->DataRegister) = rawData[readCounter];
+      if (rawData[readCounter] == 13) {
+        carriageFlag = 1;
+      }
       readCounter ++; // update the readCounter to be ready for next char
     } 
 }
 
 void writeSerial(serialPort *serial_port) {
   // stop writing after the last char has been written
-  if (rawData[writeCounter] == '\r') {
+  if (rawData[writeCounter] == 13) {
     *(serial_port->ControlRegister2) = SCI1CR2_RE_MASK|SCI1CR2_TE_MASK; // disable write interrupts
   }
   while((*(serial_port->StatusRegister) & SCI1SR1_TDRE_MASK) == 0){
