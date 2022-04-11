@@ -28,32 +28,25 @@
 </p>
   
   
-##### Discussion Points
+**Discussion Points**
 
 <p>
 123
 </p>
 
 	
-![Flowchart for Exercise 1.2](ex1.2.drawio.png)
-
-**Instructions for User**
-
-<p>
-123
-</p>
 
 #### Exercise 2
 
 
 **Modular Design**
-<p>1236</p>
+<p>123</p>
 
 **Instructions for User**
 <p>123 </p>
 
 
-##### Discussion Points
+**Discussion Points**
 
 <p>
 123
@@ -78,7 +71,7 @@
 </p>
 
   
-##### Discussion Points
+**Discussion Points**
 
 <p>
 123
