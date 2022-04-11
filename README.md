@@ -9,7 +9,7 @@
   <li>name	   - SID</li>
 	<li>Zhanbo Zhu	   - 490035735</li>
 
-#### Exercise 1
+### Exercise 1
 
 
 **Modular Design**
@@ -36,7 +36,7 @@
 
 	
 
-#### Exercise 2
+### Exercise 2
 
 
 **Modular Design**
@@ -52,7 +52,7 @@
 123
 </p>
 
-#### Exercise 3
+### Exercise 3
 
 
 **Modular Design**
