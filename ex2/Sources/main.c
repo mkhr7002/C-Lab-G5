@@ -82,11 +82,18 @@ __interrupt void serial_ISR(void)
            
         if( buffer[0] == 'l'){
         
-           //buffer[strlen(buffer)-1]= '\n';
+           
            string = buffer;
            words = strtok(string, " ");
            words = strtok(NULL, " ");
+           
+           // Output each word
            words[strlen(words)] = ':';
+           words[strlen(words)] = 'U';
+           words[strlen(words)] = 'S';
+           words[strlen(words)] = 'I';
+           words[strlen(words)] = 'N';
+           words[strlen(words)] = 'G';
            words[strlen(words)] = 'L';
            words[strlen(words)] = 'E';
            words[strlen(words)] = 'D';
