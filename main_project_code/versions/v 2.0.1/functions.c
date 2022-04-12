@@ -22,17 +22,17 @@ void writeStringToSCI(serialPort *serial_port, char* string) {
     
     // set READ_WRITE to 1 so that the interrupt knows it should be writing
     READ_WRITE = 1;
-    
+        
     // store string into rawData array so it can be sent to serial port
     for (i = 0; i < strlen(string); i++) {
     
       rawData[i] = string[i];
     
     }
-    
+    writePointer = &rawData[0];
     writeCounter = 1; // counter to keep track of which character to send (start 1 to send second char)
     // send first char to serial
-    *(serial_port->DataRegister) = rawData[0]; 
+    *(serial_port->DataRegister) = *writePointer; 
     *(serial_port->ControlRegister2) = 0x8C;
     
     // turning on interrupts conitnues the writing process
@@ -59,14 +59,17 @@ void readSerial(serialPort *serial_port) {
 
 void writeSerial(serialPort *serial_port) {
   // stop writing after the last char has been written
-  if (rawData[writeCounter] == 13) {
+  //if (rawData[writeCounter] == 13) {
+  if (*writePointer == 13) {
     *(serial_port->ControlRegister2) = SCI1CR2_RE_MASK|SCI1CR2_TE_MASK; // disable write interrupts
   }
   while((*(serial_port->StatusRegister) & SCI1SR1_TDRE_MASK) == 0){
     // wait here
   }
-  *(serial_port->DataRegister) = rawData[writeCounter]; // store the char in a list
-  writeCounter ++; // update the value at the pointer to index
+  //*(serial_port->DataRegister) = rawData[writeCounter]; // store the char in a list
+  *(serial_port->DataRegister) = *writePointer; // store the char in a list
+  //writeCounter ++; // update the value at the pointer to index
+  writePointer++;
 }
 
 void processSerialInput(void) {
