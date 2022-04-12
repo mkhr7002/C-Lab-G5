@@ -42,10 +42,20 @@ When the program runs, "Initalisation Successful" will be displayed to the termi
 
 
 **Modular Design**
-<p>123</p>
+<p>
+Design a method to receive information from user input. Trigger actions with received user input
+First define the information to be output corresponding to the received information
+Then determine the first character of the buffer after that output the result that should be output
+When the end of output is detected, reset the register of SCI0CR2
+</p>
 
 **Instructions for User**
-<p>123 </p>
+<p>
+Output Invalid command when user input is not l or m
+When user input is l, output LED, it means that the LED is being controlled
+When user input is m output play music that means that music should be played
+Every time a message is outputed, program will detect whether the output is completed
+</p>
 
 
 **Discussion Points**
