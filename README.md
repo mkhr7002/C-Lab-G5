@@ -14,24 +14,26 @@
 
 **Modular Design**
 
-<p> 123
-</p>
-	
 <p>
-123
+This is partly a foundational model with the result of reading from serial being essential to exercise 2 and 3. The writing to serial module is also fairly foundational as it can also be used in exercise 2 and 3. Reading from serial is primarily conducted by interrupts after the ports have been initialised for read (a default of sorts as the bits required for writing to serial are set prior to doing so). Writing to serial is mostly contained into the ISR (after sending the first character) which then calls the writeSerial function.
 </p>
 
 **Instructions for User**
 
 <p>
-123
+
+When the program runs, "Initalisation Successful" will be displayed to the terminal. A user may then type a command (of size < 50) and press enter when the command is done. If the command is invalid, "invalid command" will be displayed to the terminal. If the command is valid, the program will output "Request Accepted" and conduct the appropriate command in hardware. Whilst this is being done, the user may not type anything. Once the request has been completed, the program will output "Ready to receive new input" to the terminal. Anything that is inputted into the terminal during the time between "Request Accepted" and "Ready to receive new input" will not be acted upon, so a user may not input anything during this time.
+
 </p>
   
   
 **Discussion Points**
 
 <p>
-123
+
+- The data is buffered using a global array which is continually overwritten with each completed input. The limits to this have to do with the buffer size of the array which limits how long an instruction can be. This limit can be increased by increasing the value of SERIAL_BUFFER in "functions.h".
+- The time taken to service the interrupt is dependent on the time to perform the desired task. The actual time taken in terms of handling data to the point of conducting the command is extremely small (nearly negligible).
+	
 </p>
 
 	
