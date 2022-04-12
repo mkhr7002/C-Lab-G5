@@ -61,7 +61,8 @@ Every time a message is outputed, program will detect whether the output is comp
 **Discussion Points**
 
 <p>
-123
+- Use more if statement to test
+- If the number is too big or the character is not a number
 </p>
 
 ### Exercise 3
