@@ -33,6 +33,8 @@ void writeSerial(serialPort *serial_port);
 // reset everything so new input can be received
 void resetNewInput(void);
 
-void processSerialInput(void);
+void processSerialInput(serialPort *serial_port);
+
+int playTune(serialPort *serial_port);
 
 #endif
