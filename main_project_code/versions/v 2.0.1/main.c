@@ -41,7 +41,7 @@ void main(void) {
       _FEED_COP(); /* feeds the dog */
   
     }
-    processSerialInput();  
+    processSerialInput(&SCI1);  
   }
 
   
