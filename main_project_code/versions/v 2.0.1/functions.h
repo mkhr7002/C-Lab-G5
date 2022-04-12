@@ -10,6 +10,8 @@ extern volatile int writeCounter; // counter to use for writing in data from ser
 extern volatile int READ_WRITE; // constant used to determine whether the port will be reading/writing
 extern volatile int carriageFlag; // constant used to determine end of string
 
+static volatile char* writePointer;
+
 static volatile char rawData[SERIAL_BUFFER]; // list to store characters which are read/sent
 
 typedef struct serialPort{ 
