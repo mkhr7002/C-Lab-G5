@@ -137,16 +137,13 @@ int playTune(serialPort *serial_port) {
   }
     
   writeStringToSCI(serial_port, string);            // send this time to the serial port in message
- 
   DDRT =0xFF;                                       // set port T as output
   PTT = 0x00;                                       // clear port T
   
   for (i = 0; i < arrLen; i++){                     // iterate through delay arrays
-  
     timeCounter = rawData[2*i] * rawData[2*i];      // create unique large time values - this is how long the tune will play for
     
-   while (timeCounter >= 0) {
-                                                   // loop while time delay >= 0
+   while (timeCounter >= 0)                        // loop while time delay >= 0
     tuneCounter = rawData[2*i + 1] * tuneBuffer;   // this is the counter between toggling speaker on and off - different times create different tunes
              
     if (rawData[2*i+1] == ' ') {                   // if there is a space in the 'tune' position of rawData, disable speaker so that it is silent
@@ -154,14 +151,13 @@ int playTune(serialPort *serial_port) {
     } 
     else {
       PTT ^=  (1<<5);                              // toggle bit 5 of P (PT5) - toggle speaker on/off  
-      }
+    }
                                                    
     while (tuneCounter >= 0) {                     // loop while tune counter >= 0
-     
-    tuneCounter--;                                 // decrement tune delay
+      tuneCounter--;                                 // decrement tune delay
     }
    
-   timeCounter--;                                  // decrement time delay
+    timeCounter--;                                  // decrement time delay
    }  
   }
   
