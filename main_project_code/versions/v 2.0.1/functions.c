@@ -83,15 +83,20 @@ void writeSerial(serialPort *serial_port) {
   *(serial_port->StatusRegister) &= ~SCI1SR1_TDRE_MASK;
 }
 
-void processSerialInput(void) {
+void processSerialInput(serialPort *serial_port) {
+  
+  int flag = 0;      // set tune flag to 0 = ready to receive string
   
   DisableInterrupts; // disable interrupts whilst data is being dealt with
 
   if (rawData[0] == 0) {
     // do stuff with commands  
   } 
+  // play tune
   else if (rawData[0] == 1) {
-    // do stuff with tune  
+    
+    flag = 1;                            // flag = 1 --> tune being played - cannot receive another string
+    flag = playTune(serial_port);        // playTune returns 0 --> once function is finished, ready to receive another tune
   }
   
   resetNewInput();
@@ -106,4 +111,59 @@ void resetNewInput(void) {
   writeCounter = 0;
   
   EnableInterrupts; // re-enable interrupts  
+}
+
+
+int playTune(serialPort *serial_port) {
+  
+  int tuneBuffer = 10;
+  int arrLen;
+  int timeCounter;
+  int tuneCounter;
+  int i = 0;
+  int j = 0;
+  int time = 0;
+  char *string = "The song will take timer counts to finish"; // string being sent to serial port
+  
+  if (strlen(rawData) % 2 != 0) {                   // making data array is divisible by 2 so it can be split into tune and time arrays
+    arrLen = (strlen(rawData)/2) + 1;
+  } 
+  else {
+    arrLen = (strlen(rawData)/2);                   // if array has an odd number of elements, add 1 to the length
+  }
+  
+  for (j = 0; j < arrLen; i++) {
+      time = time + (rawData[2*i + 1] * tuneBuffer * rawData[2*i] * rawData[2*i]);  // calculating the full number of times the loop loops
+  }
+    
+  writeStringToSCI(serial_port, string);            // send this time to the serial port in message
+ 
+  DDRT =0xFF;                                       // set port T as output
+  PTT = 0x00;                                       // clear port T
+  
+  for (i = 0; i < arrLen; i++){                     // iterate through delay arrays
+  
+    timeCounter = rawData[2*i] * rawData[2*i];      // create unique large time values - this is how long the tune will play for
+    
+   while (timeCounter >= 0) {
+                                                   // loop while time delay >= 0
+    tuneCounter = rawData[2*i + 1] * tuneBuffer;   // this is the counter between toggling speaker on and off - different times create different tunes
+             
+    if (rawData[2*i+1] == ' ') {                   // if there is a space in the 'tune' position of rawData, disable speaker so that it is silent
+      PTT =0x00;
+    } 
+    else {
+      PTT ^=  (1<<5);                              // toggle bit 5 of P (PT5) - toggle speaker on/off  
+      }
+                                                   
+    while (tuneCounter >= 0) {                     // loop while tune counter >= 0
+     
+    tuneCounter--;                                 // decrement tune delay
+    }
+   
+   timeCounter--;                                  // decrement time delay
+   }  
+  }
+  
+  return 0;                                       // return 0 for to reset tune flag
 }
