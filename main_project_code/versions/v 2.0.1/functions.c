@@ -6,6 +6,15 @@
 #include <hidef.h>
 // set up the serial ports
 
+extern int readCounter; // counter to use for reading in data from serial
+extern int writeCounter; // counter to use for writing in data from serial
+extern int READ_WRITE; // constant used to determine whether the port will be reading/writing
+extern int carriageFlag; // constant used to determine end of string
+
+extern char* writePointer;
+
+extern char rawData[SERIAL_BUFFER]; // list to store characters which are read/sent
+
 void initialiseSerialPort(serialPort *serial_port) {
   
   *(serial_port->BaudHigh)=0;   // set baud rate
@@ -33,7 +42,7 @@ void writeStringToSCI(serialPort *serial_port, char* string) {
     writeCounter = 1; // counter to keep track of which character to send (start 1 to send second char)
     // send first char to serial
     *(serial_port->DataRegister) = *writePointer; 
-    *(serial_port->ControlRegister2) = 0x8C;
+    *(serial_port->ControlRegister2) = SCI1CR2_RE_MASK|SCI1CR2_TE_MASK|SCI1CR2_SCTIE_MASK;
     
     // turning on interrupts conitnues the writing process
     EnableInterrupts; 
@@ -68,8 +77,10 @@ void writeSerial(serialPort *serial_port) {
   }
   //*(serial_port->DataRegister) = rawData[writeCounter]; // store the char in a list
   *(serial_port->DataRegister) = *writePointer; // store the char in a list
+  //*(serial_port->DataRegister) = 16;
   //writeCounter ++; // update the value at the pointer to index
   writePointer++;
+  *(serial_port->StatusRegister) &= ~SCI1SR1_TDRE_MASK;
 }
 
 void processSerialInput(void) {
