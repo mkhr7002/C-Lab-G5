@@ -12,17 +12,16 @@ void main(void) {
   // initialise serial ports SCI0 and SCI1 to trigger interupts
   
   EnableInterrupts;
-  
-  initString = "Initalisation Successful\n";
-  initialiseSerialPort(&SCI0);
+  initString = "Initalisation Successful\r";
+  initialiseSerialPort(&SCI1);
   
   // call function to send "Initalisation Successful"
   // to the terminal via the serial port
   
-  writeStringToSCI(&SCI0, initString);
+  //writeStringToSCI(&SCI1, initString);
   DisableInterrupts
   // re-initalise ports for serial reading interrupts
-  initialiseSerialPort(&SCI0);
+  // initialiseSerialPort(&SCI0);
   initialiseSerialPort(&SCI1);
   EnableInterrupts 
 
